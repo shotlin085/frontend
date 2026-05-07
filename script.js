@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:4000/api/users';
+let API_URL = 'http://localhost:4000/api/users'; // Default fallback
 
 const form = document.getElementById('add-user-form');
 const nameInput = document.getElementById('name');
@@ -6,6 +6,24 @@ const emailInput = document.getElementById('email');
 const usersList = document.getElementById('users-list');
 const statusMessage = document.getElementById('status-message');
 const submitBtn = document.getElementById('submit-btn');
+
+// Fetch and parse .env file
+async function loadEnv() {
+  try {
+    const res = await fetch('.env');
+    if (!res.ok) throw new Error('Cannot load .env');
+    const text = await res.text();
+    
+    text.split('\n').forEach(line => {
+      const match = line.match(/^([^=]+)=(.*)$/);
+      if (match && match[1].trim() === 'API_URL') {
+        API_URL = match[2].trim();
+      }
+    });
+  } catch (err) {
+    console.warn('Could not load .env file, using default API_URL.');
+  }
+}
 
 // Load users on startup
 async function fetchUsers() {
@@ -91,4 +109,9 @@ form.addEventListener('submit', async (e) => {
 });
 
 // Init
-fetchUsers();
+async function init() {
+  await loadEnv();
+  fetchUsers();
+}
+
+init();
