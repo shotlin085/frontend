@@ -1,4 +1,4 @@
-let API_URL = 'http://localhost:4000/api/users'; // Default fallback
+let API_URL = 'https://backend-oycng.apps.shotlin.in/api/users'; // Default fallback
 
 const form = document.getElementById('add-user-form');
 const nameInput = document.getElementById('name');
@@ -13,7 +13,7 @@ async function loadEnv() {
     const res = await fetch('.env');
     if (!res.ok) throw new Error('Cannot load .env');
     const text = await res.text();
-    
+
     text.split('\n').forEach(line => {
       const match = line.match(/^([^=]+)=(.*)$/);
       if (match && match[1].trim() === 'API_URL') {
@@ -43,13 +43,13 @@ function renderUsers(users) {
     usersList.innerHTML = '<div style="color: var(--text-secondary)">No users found.</div>';
     return;
   }
-  
+
   usersList.innerHTML = '';
   users.forEach((user, index) => {
     const card = document.createElement('div');
     card.className = 'user-card';
     card.style.animationDelay = `${index * 0.05}s`;
-    
+
     card.innerHTML = `
       <div class="user-name">${user.name}</div>
       <div class="user-email">${user.email}</div>
@@ -69,15 +69,15 @@ function showStatus(message, isError = false) {
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const name = nameInput.value.trim();
   const email = emailInput.value.trim();
-  
+
   if (!name || !email) return;
-  
+
   submitBtn.disabled = true;
   submitBtn.textContent = 'Creating...';
-  
+
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
@@ -86,17 +86,17 @@ form.addEventListener('submit', async (e) => {
       },
       body: JSON.stringify({ name, email })
     });
-    
+
     if (!res.ok) {
       const data = await res.json();
       throw new Error(data.error || 'Failed to create user');
     }
-    
+
     // Success
     showStatus('User created successfully!');
     nameInput.value = '';
     emailInput.value = '';
-    
+
     // Refresh the list
     fetchUsers();
   } catch (err) {
