@@ -1,4 +1,4 @@
-let API_URL = 'https://backend-oycng.apps.shotlin.in/api/users'; // Default fallback
+let API_URL = 'https://loclhost:3000/api/users'; // Default fallback
 
 const form = document.getElementById('add-user-form');
 const nameInput = document.getElementById('name');
